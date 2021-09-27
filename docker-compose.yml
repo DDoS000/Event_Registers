@@ -1,0 +1,48 @@
+version: '3'
+services:
+  backend:
+    build: backend
+    depends_on:
+      - cache
+      - database
+    restart: unless-stopped
+    environment:
+      - PORT=8000
+      - MAX_WORKERS=10
+      - POSTGRES_URI=Master:syspass@database:5432/events
+      - CACHE_URI=redis://cache:6379
+      - POSTGRES_MIN_POOL_SIZE=1
+      - POSTGRES_MAX_POOL_SIZE=5
+      - JWT_SECRET=secret
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --workers $${MAX_WORKERS}"
+  cache:
+    image: "redis:6.2-alpine"
+    restart: unless-stopped
+    command: --port 6379
+    expose:
+      - 6379
+    volumes:
+      - "./_data/cache-data:/data"
+  database:
+    image: "postgres:13.3-alpine"
+    restart: unless-stopped
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=syspass
+      - POSTGRES_USER=Master
+      - POSTGRES_DB=events
+    volumes:
+      - ./_data/postgres-data:/var/lib/postgresql/data
+# TODO: ssg or ssr, ssr in node js ssg in static file
+  # frontend:
+  #   build: "frontend"
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - backend

@@ -1,0 +1,7 @@
+*-data*
+**/.idea/
+**/.vscode/
+**/backend-env
+/env
+/__pycache__
+/__pycache__/

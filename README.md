@@ -1,7 +1,6 @@
 # Event_Registers
 
-Next js, FastApi, Redis, jwt, DB?
-> **⚠  Unselected Database.**  
+Next js, FastApi, Redis, jwt, postgres 
 
 ## Features
 
